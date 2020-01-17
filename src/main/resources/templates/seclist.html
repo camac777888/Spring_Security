@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<h3>权限页面</h3>
+
+
+<nav>
+
+    <ul class="pager">
+        <li class="previous"> <a href="#" th:href="@{'/book?page='+${page.number-1}}">上一页</a></li>
+        <li class="next"> <a href="#" th:href="@{/books(page=${page.number}+1})}">下一页</a></li>
+    </ul>
+
+</nav>
+
+
+</body>
+</html>
