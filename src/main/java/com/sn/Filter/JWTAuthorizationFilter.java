@@ -66,10 +66,10 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
             throw new RuntimeException("该账号已过期,请重新登陆");
         }
-
-
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+        authenticationToken.setDetails("有效日期: "+expiration);
         if (username != null) {
-            return new UsernamePasswordAuthenticationToken(username, null, authorities);
+            return authenticationToken;
         }
         return null;
     }

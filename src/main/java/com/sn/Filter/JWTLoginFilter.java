@@ -61,6 +61,11 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException{
+
+      boolean isRememberMe = false;
+            if("on".equals(request.getParameter("remember_me"))){
+                isRememberMe = true ;
+            }
                // 获取用户认证权限
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         // 获取用户角色
@@ -71,7 +76,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         roles.add("ROLE_USER");
     }
         JWTUtil jwtUtil =new JWTUtil();
-        String token = jwtUtil.createToken(authResult.getName(), false,roles);
+        String token = jwtUtil.createToken(authResult.getName(), isRememberMe,roles);
         // 返回创建成功的token
         // 但是这里创建的token只是单纯的token
         // 按照jwt的规定，最后请求的时候应该是 `Bearer token`
