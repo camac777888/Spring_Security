@@ -66,7 +66,7 @@ graph TB;
 
 **Controller**
 
-​	無須要權限的api都寫在Controller，前綴為(/api)
+​	無須權限的api都寫在Controller，前綴為(/api)
 
 ​	需要權限的api都寫在SecurityController，前綴為(/sec)
 
@@ -82,7 +82,7 @@ graph TB;
 
 ​		校驗失敗調用unsuccessfulAuthentication方法，並回傳原因
 
-*千萬記得要在這裡配置getAuthenticationManager().authenticate(authRequest)，當初在這耍笨卡很久，若沒有配置他會直接默認直接成功，而且自定義的provider直接忽略。*
+*記得要在這裡配置getAuthenticationManager().authenticate(authRequest)，若沒有配置他會直接默認直接成功，而且自定義的provider直接忽略。*
 
 ​	JWTAuthorizationFilter 繼承BasicAuthenticationFilter的自定義請求過濾器
 
@@ -128,9 +128,9 @@ return authentication.equals(UsernamePasswordAuthenticationToken.class);
 @EnableGlobalAuthentication 
 @Configurationpublic @interface EnableWebSecurity {  
 boolean debug() default false;}
-
-http://blog.didispace.com/xjf-spring-security-3/ 詳解請看這個大佬
 ```
+
+http://blog.didispace.com/xjf-spring-security-3/  詳解請看這個大佬
 
 WebSecurityConfigurerAdapter的三個方法
 
@@ -149,3 +149,99 @@ WebSecurityConfigurerAdapter的三個方法
 
 
 *https://www.jianshu.com/p/e6655328b211 大佬在這，有關於SecurityConfig 寫得很詳細*
+
+**application.properties**
+
+也可寫成application.yml，可以配置數據庫的設定
+
+```
+spring.datasource.url=
+jdbc:mysql://Hostname:Port/數據庫名?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+spring.datasource.username=數據庫帳號
+spring.datasource.password=數據庫密碼
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver 驅動程式
+```
+
+https://www.jianshu.com/p/5a62b8dc02f3 大佬在這，application詳細配置
+
+
+
+
+
+#### 功能特性
+
+​		/api 任何人都可訪問
+
+​		/sec 特定權限訪問
+
+
+
+**登入(/permit/login,POST&GET)**
+
+​	需要傳入參數
+
+​	username
+
+​	password
+
+​	remember_me
+
+由於結合了spring security，不同於以往的api寫在controller中，儘管不能夠自由的修改，但了解大部分的控制依然能達到修改的效果。
+
+spring security 默認提交登入表單的url為(/login)，在這更改為(/permit/login)，我是配製在JWTLoginFilter中。另外，可以在JWTLoginFilter配置限定POST方法或GET方法，這裡沒有配置所以都可以。
+
+remember_me 在JWTLoginFilter驗證成功時調用的successfulAuthentication方法，由於是用HttpServletRequest.getParameter("remember_me")若checkbox有勾選會回傳字串"on"，這裡默認不是on的一律為false
+
+
+
+**註冊(/api/register,POST)**
+
+​	需要傳入參數
+
+​	username	(帳號
+
+​	name	(真實姓名
+
+​	password	(密碼
+
+只要填入以上三個參數即可，其他會默認配置，這裡密碼會直接加密(BCryptPasswordEncoder.encode())
+
+*加密方式可以直接在SecurityConfig中可以任意更改配置*
+
+權限配置要自己手動進資料庫去設定，但是若是都沒配置，在JWTLoginFilter驗證成功時調用的successfulAuthentication方法中，有默認為若都沒有抓到該帳戶有任何權限，會自動配置"ROLE_USER"
+
+
+
+**更改密碼(/api/modify,POST)**
+
+​	需要傳入參數
+
+​	username	(帳號
+
+​	password	(密碼
+
+此方法僅用來測試無需權限即可操作，一樣密碼會直接加密(BCryptPasswordEncoder.encode())
+
+
+
+**檢查權限(/api/checkAuth,GET)**
+
+​	需要帶token
+
+根據帶入的token解析出當前token的權限
+
+
+
+**通道健康檢測(/sec/healthcheck,GET){hasRole('USER')}限定ROLE_USER**
+
+​	需要帶token
+
+成功時回傳"success"'
+
+
+
+**檢查用戶權限細節**
+
+​	需要帶token
+
+根據帶入的token解析出當前token的一些資料(到期時間、用戶權限及一些細節)
