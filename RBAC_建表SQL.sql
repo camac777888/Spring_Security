@@ -3,13 +3,13 @@ create table user(
 id int(10) AUTO_INCREMENT PRIMARY KEY,
 name varchar(50) NOT NULL,
 username varchar(50) NOT NULL,
-password varchar(50) NOT NULL,
+password varchar(100) NOT NULL,
 createDate date ,
 lastLoginDate date ,
-enabled int(5)  NOT NULL,
-accountNonExpired int(5) NOT NULL ,
-accountNonLocked  int(5) NOT NULL ,
-credentialsNonExpired  int(5) NOT NULL DEFAULT 50
+enabled int(5)  NOT NULL DEFAULT 1,
+accountNonExpired int(5) NOT NULL DEFAULT 1,
+accountNonLocked  int(5) NOT NULL DEFAULT 1,
+credentialsNonExpired  int(5) NOT NULL DEFAULT 1
 )
 
 
