@@ -60,6 +60,10 @@ graph TB;
 
 **Service**
 
+​	BaseService 
+
+​	日誌類別，其他類別可以透過繼承此類別，直接使用日誌功能。
+
 ​	MyUserDetailService
 
 ​	1.更改密碼、用戶註冊、基本查詢等邏輯
@@ -120,7 +124,9 @@ return authentication.equals(UsernamePasswordAuthenticationToken.class);
 
 **Security**
 
-​	JWTUtil 用來製作token的工具類以及設定token存活時間設定。
+​	SecurityConstants  存放token存活時間、製作token相關參數。
+
+​	JWTUtil 用來製作token的工具類。
 
 ​	SecurityConfig  Spring Security核心類，繼承 WebSecurityConfigurerAdapter，記得加上@EnableWebSecurity來啟動
 
