@@ -114,7 +114,7 @@ CustomAuthenticationProvider 中，主要實現AuthenticationProvider兩種方�
 
 ​	supports(Class<?> authentication)
 
-​		這個方法我還在理解，就目前的理解為如果這個AuthenticationProvider支持指定的身份验证对象，那么返回true。從JWTLoginFilter  傳進來的是UsernamePasswordAuthenticationToken格式，則在這裡
+​		這個方法我還在理解，就目前的理解為如果這個AuthenticationProvider支持指定的身份驗證對象，則返回true。從JWTLoginFilter  傳進來的是UsernamePasswordAuthenticationToken格式，則在這裡
 
 ```
 return authentication.equals(UsernamePasswordAuthenticationToken.class);
@@ -196,7 +196,7 @@ https://www.jianshu.com/p/5a62b8dc02f3 大佬在這，application詳細配置
 
 ​	remember_me
 
-由於結合了spring security，不同於以往的api寫在controller中，儘管不能夠自由的修改，但了解大部分的控制依然能達到修改的效果。
+由於結合了spring security，不同於以往的api寫在controller中，儘管不能夠自由的修改，但了解如何配制依然能達到修改的效果。
 
 spring security 默認提交登入表單的url為(/login)，在這更改為(/permit/login)，我是配製在JWTLoginFilter中。另外，可以在JWTLoginFilter配置限定POST方法或GET方法，這裡沒有配置所以都可以。
 
