@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service("MyUserDetailService")
-public class MyUserDetailService implements UserDetailsService {
+public class MyUserDetailService extends BaseService implements UserDetailsService {
 
 //    private Logger logger = Logger.getLogger(MyUserDetailService.class);
 
@@ -55,9 +55,8 @@ public  List<Auth>  findAuthByUsername(String username){
 //        BasicConfigurator.configure();
 
         User user = userMapper.findByUsername(username);
+        log.info("藉由輸入的帳號:{},從資料庫中抓取用戶資料: {}",username,user);
         if(user!=null){
-
-
         //根據用戶名查詢當前用戶所有權限
         List<Auth> authList =  userMapper.findAuthByUsername(username);
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -66,6 +65,8 @@ public  List<Auth>  findAuthByUsername(String username){
             GrantedAuthority authority = new SimpleGrantedAuthority(au.getAuthInfo());
             authorities.add(authority);
         }
+        log.info("抓取資料庫存取權限:{}",authorities);
+
         user.setAuthorities(authorities);
 //        logger.info("當前用戶:"+user);
         }

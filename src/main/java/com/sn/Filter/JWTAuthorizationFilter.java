@@ -1,20 +1,18 @@
 package com.sn.Filter;
 
-import com.sn.Security.JWTUtil;
+import com.sn.Security.Util.JWTUtil;
+import com.sn.Security.constants.SecurityConstants;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,9 +25,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String token = request.getHeader(JWTUtil.TOKEN_HEADER);
+        String token = request.getHeader(SecurityConstants.TOKEN_HEADER);
         // 判断是否有token,如果请求头中没有Authorization信息则直接放行了
-        if (token == null || !token.startsWith(JWTUtil.TOKEN_PREFIX)) {
+        if (token == null || !token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
@@ -49,7 +47,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
      */
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         //清除前綴
-        String token1 = token.replace(JWTUtil.TOKEN_PREFIX, "");
+        String token1 = token.replace(SecurityConstants.TOKEN_PREFIX, "");
         JWTUtil jwtUtil = new JWTUtil();
 
         //得到用户名

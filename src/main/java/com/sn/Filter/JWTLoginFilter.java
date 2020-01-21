@@ -3,14 +3,15 @@ package com.sn.Filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.sn.Security.JWTUtil;
+import com.sn.Security.Util.JWTUtil;
+import com.sn.Security.constants.SecurityConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -18,13 +19,12 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
+public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter  {
 
-
+    protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
     private ObjectMapper objectMapper = new ObjectMapper();
     public JWTLoginFilter() {
@@ -74,6 +74,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .collect(Collectors.toList());
     if(roles.size()==0){
         roles.add("ROLE_USER");
+        log.info("該用戶未設定權限，默認配予{}",roles);
     }
         JWTUtil jwtUtil =new JWTUtil();
         String token = jwtUtil.createToken(authResult.getName(), isRememberMe,roles);
@@ -81,14 +82,14 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         // 但是这里创建的token只是单纯的token
         // 按照jwt的规定，最后请求的时候应该是 `Bearer token`
 
-        response.setHeader("token", JWTUtil.TOKEN_PREFIX + token);
+        response.setHeader("token", SecurityConstants.TOKEN_PREFIX + token);
         response.setContentType("application/json;charset=utf-8");
 
         Map result = new HashMap();
 
         result.put("code",200);
         result.put("msg","success");
-        result.put("token",JWTUtil.TOKEN_PREFIX + token);
+        result.put("token",SecurityConstants.TOKEN_PREFIX + token);
         String json =objectMapper.writeValueAsString(result);
         response.getWriter().write(json);
         response.getWriter().flush();
