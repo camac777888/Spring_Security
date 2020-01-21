@@ -4,11 +4,15 @@
 
 此專案結合Springboot+SpringSecurity+Mybatis+JWT(Java Web Token)+使用RBAC(5張表)
 
+#### 項目更新
 
+2020.01.20 	新增RememberMe功能
+
+2020.01.21	新增日誌功能
 
 #### 專案結構
 
-![結構](https://github.com/camac777888/Spring_Security/raw/master/Screenshots/1.PNG)
+![結構](https://github.com/camac777888/Spring_Security/raw/master/Screenshots/2.PNG)
 
 
 
