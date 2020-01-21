@@ -2,6 +2,7 @@ package com.sn.Provider;
 
 import com.sn.Domain.Auth;
 import com.sn.Domain.User;
+import com.sn.Service.BaseService;
 import com.sn.Service.MyUserDetailService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component("CustomAuthenticationProvider")
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider extends BaseService implements AuthenticationProvider {
     @Autowired
     private MyUserDetailService myUserDetailService;
     @Autowired
@@ -32,10 +33,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        log.info("進入CustomAuthenticationProvider並進行驗證...");
+
         // 获取认证信息的用户名和密码
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-
+        log.info("前台輸入的用戶名:{},密碼:{}",username,password);
         if(StringUtils.isBlank(username)){
             throw new UsernameNotFoundException("username用户名不可以为空");
         }
@@ -61,7 +64,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new CredentialsExpiredException("用戶憑證過期");
         }
         if(passwordEncoder.matches(password,userDetails.getPassword())){
-
+            log.info("驗證通過...");
             return new UsernamePasswordAuthenticationToken(username, password,userDetails.getAuthorities());
 
         }else{
